@@ -1,0 +1,100 @@
+@import url('https://rsms.me/inter/inter.css');
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
+
+small {
+  @extend .text-uppercase;
+  font-weight: $headings-font-weight;
+  font-family: $headings-font-family;
+}
+
+.btn-group__routes {
+  .btn__route {
+    font-size: .6rem;
+  }
+}
+
+.btn__route {
+  @extend small;
+  transition: transform .2s ease;
+  word-break: break-all;
+  white-space: break-spaces;
+
+  & + & {
+    margin-left: $spacer / 8;
+  }
+
+  &:hover {
+    transform: scale(1.3);
+    box-shadow: 0 0 1rem 0.5rem #fff;
+  }
+}
+
+.app {
+  margin: $spacer;
+
+  > header {
+    text-align: center;
+
+    h1 {
+    font-family: "Inter";
+    }
+  }
+}
+
+a[data-target="#more-routes"] {
+  @extend .text-primary;
+  text-decoration: underline;
+  font-size: small;
+  margin: 0 $spacer;
+  padding: .125em .25em;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 200;
+  line-height: 1.2;
+}
+
+.grid-wrapper {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-gap: $spacer;
+
+  > section, > main {
+    @extend .bg-white;
+    padding: $spacer;
+  }
+}
+
+.services-wrapper {
+  display: grid;
+  grid-gap: $spacer;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr) ) ;
+  font-size: small;
+
+  .service {
+    border: 1px solid;
+    padding: $spacer / 2;
+  }
+
+  .rating {
+    @extend .bg-primary-lightest-contrast;
+    @extend .text-primary-darkest;
+    margin-top: -$spacer / 2;
+    margin-left: -$spacer / 2;
+    margin-right: -$spacer / 2;
+    margin-bottom: $spacer / 2;
+    padding: $spacer / 4 $spacer / 2;
+  }
+
+  footer {
+    font-size: .75em;
+    margin-top: $spacer/2;
+    text-align: right;
+  }
+}
