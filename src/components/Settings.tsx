@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { ReactElement, useEffect, useState } from 'react';
 import RouteButton from './RouteButton';
 import { Error, NoData, Loading } from './Messages';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import { State } from '../Store';
+import fetchMBTA from '../util/fetch-mbta';
 
 type RouteType = 0 | 1 | 2 | 3 | 4 | 5;
 interface RouteAttributes {
@@ -19,14 +21,14 @@ export interface Route {
 }
 
 const Settings = (): ReactElement => {
-  const [routes, setRoutes] = useLocalStorage("allRoutes", "");
+  const [routes, setRoutes] = useLocalStorage("mbta-service-exp--allRoutes");
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!routes) {
       const fetchData = async () => {
         try {
-          const res = await fetch("https://green.dev.api.mbtace.com/routes", {});
+          const res = await fetchMBTA("/routes");
           const json = await res.json();
           setRoutes(json.data);
         } catch (error) {

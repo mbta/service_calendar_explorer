@@ -1,19 +1,9 @@
 import React, { ReactElement, useState, useEffect } from 'react';
-import { Service } from '../Store';
 import { Loading, NoData } from './Messages';
 import useLocalStorage from '../hooks/useLocalStorage';
-
-// ["❓unknown","✅typical","⭐️extra","🎁holiday","⚠️planned disruption","🚨unplanned disruption"]
-export const typicality = (t: number): string =>
-  ["❓ ", "✅ ", "⭐️ ", "🎁 ", "⚠️ ", "🚨 "][t];
-
-const dateText = (d: string): string => {
-  const date = new Date(`${d}T01:00:00`);
-  return !isNaN(date.getTime()) ? date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' }) : "?";
-}
-
-const dateRange = (start: string, end: string): string =>
-  [start, end].map(dateText).join("—");
+import fetchMBTA from '../util/fetch-mbta';
+import { dateRange, dateText } from '../util/date';
+import { typicality, Service } from '../util/service';
 
 const ServiceCard = ({ id, service }: { id: string, service: Service }): ReactElement => {
   return (
@@ -65,7 +55,7 @@ const ServiceCard = ({ id, service }: { id: string, service: Service }): ReactEl
 const Services = ({routeIDs}: {routeIDs: string[]}): ReactElement => {
   const [loading, setLoading] = useState(false);
   const routesQuery = routeIDs.sort().join("-");
-  const [services, setServices] = useLocalStorage(routesQuery, "");
+  const [services, setServices] = useLocalStorage(routesQuery);
   const [result, setResult] = useState(services);
   useEffect(() => {
     setLoading(!result)
@@ -75,9 +65,9 @@ const Services = ({routeIDs}: {routeIDs: string[]}): ReactElement => {
     async function fetchIt() {
       try {
         setLoading(true);
-        const response = await fetch(`https://api-v3.mbta.com/services?filter%5Broute%5D=${routeIDs.sort().join(",")}`, {})
+        const response = await fetchMBTA(`/services?filter%5Broute%5D=${routeIDs.sort().join(",")}`)
         const { data: newServices } = await response.json();
-        setServices(JSON.stringify(newServices));
+        setServices(newServices);
         setResult(newServices)
       } catch (error) {
         setLoading(false);

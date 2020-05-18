@@ -8,9 +8,10 @@ export default function useLocalStorage(
     () => window.localStorage.getItem(key) || initialValue
   );
 
-  const setItem = (newValue: string) => {
-    setValue(newValue);
-    window.localStorage.setItem(key, newValue);
+  const setItem = (newValue: any) => {
+    const stringified = JSON.stringify(newValue)
+    setValue(stringified);
+    window.localStorage.setItem(key, stringified);
   };
 
   useEffect(() => {

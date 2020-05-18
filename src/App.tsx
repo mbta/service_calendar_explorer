@@ -14,11 +14,11 @@ function App() {
         <h1 className="title"><strong>MBTA</strong> Services Explorer</h1>
         <p className="small">Explore way too many services at once.</p>
       </header>
-      <Analysis />
       <section>
         <small>Routes</small>
         <Settings />
       </section>
+      <Analysis />
       <main>
         <small>Services</small>
         {routeIDs.length && <Services routeIDs={routeIDs} />}

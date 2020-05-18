@@ -2,8 +2,8 @@ import React, { ReactElement } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import { VictoryChart, VictoryAxis, VictoryLine, VictoryLabel } from 'victory';
-import { State, Service } from '../Store';
-import { typicality } from './Services';
+import { State } from '../Store';
+import { typicality, Service } from '../util/service';
 
 const today = new Date();
 
