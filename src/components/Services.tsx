@@ -1,5 +1,4 @@
 import React, { ReactElement, useEffect } from 'react';
-import { Loading, NoData } from './Messages';
 import useLocalStorage from '../hooks/useLocalStorage';
 import fetchMBTA from '../util/fetch-mbta';
 import { dateRange, dateText } from '../util/date';
@@ -67,11 +66,9 @@ const Services = (): ReactElement => {
         const response = await fetchMBTA(`/services?filter%5Broute%5D=${routeIDs.sort().join(",")}`)
         const { data: newServices } = await response.json();
         setServices(newServices);
-        dispatch({ type: "SET_ERROR", error: null })
-        dispatch({ type: "END_LOAD" })
+        dispatch({ type: "SET_ERROR", payload: { error: null } })
       } catch (error) {
-        dispatch({ type: "SET_ERROR", error })
-        dispatch({ type: "END_LOAD" })
+        dispatch({ type: "SET_ERROR", payload: { error: error } })
       }
     }
 
@@ -80,7 +77,6 @@ const Services = (): ReactElement => {
     }
   }, [services, routeIDs, setServices, dispatch]);
   
-  if (!services) return <NoData />;
   return <div className="services-wrapper">
     {services.map((service: any, i: number) =>
       <ServiceCard key={`${service.id}-${i}`} id={service.id} service={service.attributes} />

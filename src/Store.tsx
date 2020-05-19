@@ -40,12 +40,19 @@ const reducer: Reducer<State, Action> = (
         loading: false
       }
       break;
+    case "SET_ERROR":
+      newState = {
+        ...newState,
+        loading: false,
+        error: action.payload.error
+      }
+      break;
     case "INCLUDE_ROUTE":
       newState = {
         ...newState,
         routes: [
           ...newState.routes,
-          action.payload!.route
+          action.payload.route
         ]
       }
       break;
