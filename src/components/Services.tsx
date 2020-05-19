@@ -1,9 +1,11 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { Loading, NoData } from './Messages';
 import useLocalStorage from '../hooks/useLocalStorage';
 import fetchMBTA from '../util/fetch-mbta';
 import { dateRange, dateText } from '../util/date';
 import { typicality, Service } from '../util/service';
+import { useDispatch, useSelector } from 'react-redux';
+import { State } from '../Store';
 
 const ServiceCard = ({ id, service }: { id: string, service: Service }): ReactElement => {
   return (
@@ -52,37 +54,35 @@ const ServiceCard = ({ id, service }: { id: string, service: Service }): ReactEl
   )
 }
 
-const Services = ({routeIDs}: {routeIDs: string[]}): ReactElement => {
-  const [loading, setLoading] = useState(false);
+const Services = (): ReactElement => {
+  const dispatch = useDispatch();
+  const routeIDs = useSelector((store: State) => store.routes);
   const routesQuery = routeIDs.sort().join("-");
   const [services, setServices] = useLocalStorage(routesQuery);
-  const [result, setResult] = useState(services);
-  useEffect(() => {
-    setLoading(!result)
-  }, [result, setLoading]);
-  
+
   useEffect(() => {
     async function fetchIt() {
       try {
-        setLoading(true);
+        dispatch({ type: "START_LOAD" })
         const response = await fetchMBTA(`/services?filter%5Broute%5D=${routeIDs.sort().join(",")}`)
         const { data: newServices } = await response.json();
         setServices(newServices);
-        setResult(newServices)
+        dispatch({ type: "SET_ERROR", error: null })
+        dispatch({ type: "END_LOAD" })
       } catch (error) {
-        setLoading(false);
+        dispatch({ type: "SET_ERROR", error })
+        dispatch({ type: "END_LOAD" })
       }
     }
 
     if (services === "") {
       fetchIt();
     }
-  }, [services, routeIDs, setServices]);
+  }, [services, routeIDs, setServices, dispatch]);
   
-  if (loading) return <Loading />
-  if (!result) return <NoData />;
+  if (!services) return <NoData />;
   return <div className="services-wrapper">
-    {result.map((service: any, i: number) =>
+    {services.map((service: any, i: number) =>
       <ServiceCard key={`${service.id}-${i}`} id={service.id} service={service.attributes} />
     )}
   </div>

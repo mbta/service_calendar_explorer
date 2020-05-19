@@ -5,9 +5,13 @@ import Services from './components/Services';
 import Analysis from './components/Analysis';
 import { useSelector } from 'react-redux';
 import { State } from './Store';
+import { Loading, Error, NoData } from './components/Messages';
 
 function App() {
-  const routeIDs = useSelector((store: State) => store.routes);
+  const loading = useSelector((store: State) => store.loading)
+  const error = useSelector((store: State) => store.error)
+  const routes = useSelector((store: State) => store.routes)
+  
   return (
     <div className="app grid-wrapper">
       <header>
@@ -18,11 +22,17 @@ function App() {
         <small>Routes</small>
         <Settings />
       </section>
-      <Analysis />
-      <main>
-        <small>Services</small>
-        {routeIDs.length && <Services routeIDs={routeIDs} />}
-      </main>
+      {loading 
+      ? <Loading /> 
+      : (error ? <Error error={error} /> : (routes.length ? <>
+        <Analysis />
+        <main>
+          <small>Services</small>
+          <Services />
+        </main>
+      </> : <NoData />))
+      }
+      
     </div>
   );
 }
