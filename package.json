@@ -2,6 +2,7 @@
   "name": "services-explorer",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mbta.github.io/service_calendar_explorer",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -16,6 +17,7 @@
     "@types/victory": "^33.1.4",
     "bootstrap": "^4.5.0",
     "d3": "^5.16.0",
+    "gh-pages": "^2.2.0",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",
     "react": "^16.13.1",
@@ -28,6 +30,8 @@
     "victory": "^34.3.5"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
