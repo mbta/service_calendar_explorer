@@ -61,8 +61,8 @@ const Services = (): ReactElement => {
 
   useEffect(() => {
     async function fetchIt() {
+      dispatch({ type: "START_LOAD" })
       try {
-        dispatch({ type: "START_LOAD" })
         const response = await fetchMBTA(`/services?filter%5Broute%5D=${routeIDs.sort().join(",")}`)
         const { data: newServices } = await response.json();
         setServices(newServices);
@@ -78,7 +78,7 @@ const Services = (): ReactElement => {
   }, [services, routeIDs, setServices, dispatch]);
   
   return <div className="services-wrapper">
-    {services.map((service: any, i: number) =>
+    {!!services && services.map((service: any, i: number) =>
       <ServiceCard key={`${service.id}-${i}`} id={service.id} service={service.attributes} />
     )}
   </div>

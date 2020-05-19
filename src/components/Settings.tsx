@@ -3,7 +3,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import RouteButton from './RouteButton';
 import { Error, NoData, Loading } from './Messages';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../Store';
 import fetchMBTA from '../util/fetch-mbta';
 
@@ -20,33 +20,34 @@ export interface Route {
   attributes: RouteAttributes;
 }
 
-const Settings = (): ReactElement => {
+const Settings = (): ReactElement | null => {
   const [routes, setRoutes] = useLocalStorage("mbta-service-exp--allRoutes");
-  const [error, setError] = useState(null);
+  const selectedRouteIDs = useSelector((store: State) => store.routes);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!routes) {
-      const fetchData = async () => {
-        try {
-          const res = await fetchMBTA("/routes");
-          const json = await res.json();
-          setRoutes(json.data);
-        } catch (error) {
-          setError(error);
-        }
-      };
+    const fetchData = async () => {
+      try {
+        const res = await fetchMBTA("/routes");
+        const json = await res.json();
+        setRoutes(json.data);
+        dispatch({ type: "SET_ERROR", payload: { error: null } })
+      } catch (error) {
+        dispatch({ type: "SET_ERROR", payload: { error: error } })
+      }
+    };
   
+    if (!routes) {
       fetchData();
     }
-    
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [routes]);
 
-  const selectedRouteIDs = useSelector((store: State) => store.routes)
-  if (!routes) return <Loading />;
-  if (routes.length === 0) return <NoData />;
-  if (error) return <Error error={error} />;
+  if (!routes) {
+    return null;
+  }
 
+  
   const routeGroups = routes.reduce((acc: { selectedRoutes: Route[], otherRoutes: Route[] }, route: Route) => {
     if (selectedRouteIDs.includes(route.id)) {
       acc["selectedRoutes"].push(route);
