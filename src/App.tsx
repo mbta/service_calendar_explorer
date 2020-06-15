@@ -24,7 +24,7 @@ function App() {
       </section>
       {loading 
       ? <Loading /> 
-      : (error ? <Error error={error} /> : (routes.length ? <>
+      : (error ? <Error error={error} /> : (routes && routes.length ? <>
         <Analysis />
         <main>
           <small>Services</small>

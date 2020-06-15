@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import RouteButton from './RouteButton';
-import { Error, NoData, Loading } from './Messages';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '../Store';
@@ -49,7 +48,7 @@ const Settings = (): ReactElement | null => {
 
   
   const routeGroups = routes.reduce((acc: { selectedRoutes: Route[], otherRoutes: Route[] }, route: Route) => {
-    if (selectedRouteIDs.includes(route.id)) {
+    if (selectedRouteIDs && selectedRouteIDs.includes(route.id)) {
       acc["selectedRoutes"].push(route);
     } else {
       acc["otherRoutes"].push(route);

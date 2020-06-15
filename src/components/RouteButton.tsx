@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Route } from './Settings';
 import { useDispatch } from 'react-redux';
 
@@ -30,12 +30,13 @@ const RouteButton = ({ route, checked }: { route: Route, checked: boolean }) => 
   }
   const name = type === 3 ?  short_name : long_name;
   const dispatch = useDispatch();
+  const changeRoute = useCallback(() => {
+    const type = checked ? "EXCLUDE_ROUTE" : "INCLUDE_ROUTE";
+    dispatch({ type, payload: { route: route.id }})
+  }, [checked])
 
   return (
-    <label className="badge badge-pill btn btn__route" style={style} onClick={() => {
-        const type = checked ? "EXCLUDE_ROUTE" : "INCLUDE_ROUTE";
-        dispatch({ type, payload: { route: route.id }})
-      }}>
+    <label className="badge badge-pill btn btn__route" style={style} onClick={changeRoute}>
       <input type="checkbox" name={route.id} id={route.id} checked={checked} readOnly />
       {abbreviate(name)}
       {checked && " ⓧ"}

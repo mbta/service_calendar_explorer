@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, Dispatch } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import fetchMBTA from '../util/fetch-mbta';
 import { dateRange, dateText } from '../util/date';
@@ -53,27 +53,27 @@ const ServiceCard = ({ id, service }: { id: string, service: Service }): ReactEl
   )
 }
 
+async function fetchIt(routeIDs: string[], setServices: React.Dispatch<string>, dispatch: Dispatch<any>) {
+  dispatch({ type: "START_LOAD" })
+  try {
+    const response = await fetchMBTA(`/services?filter%5Broute%5D=${routeIDs.sort().join(",")}`)
+    const { data: newServices } = await response.json();
+    setServices(newServices);
+    dispatch({ type: "SET_ERROR", payload: { error: null } })
+  } catch (error) {
+    dispatch({ type: "SET_ERROR", payload: { error: error } })
+  }
+}
+
 const Services = (): ReactElement => {
   const dispatch = useDispatch();
   const routeIDs = useSelector((store: State) => store.routes);
-  const routesQuery = routeIDs.sort().join("-");
+  const routesQuery = routeIDs ? routeIDs.sort().join("-") : "";
   const [services, setServices] = useLocalStorage(routesQuery);
 
   useEffect(() => {
-    async function fetchIt() {
-      dispatch({ type: "START_LOAD" })
-      try {
-        const response = await fetchMBTA(`/services?filter%5Broute%5D=${routeIDs.sort().join(",")}`)
-        const { data: newServices } = await response.json();
-        setServices(newServices);
-        dispatch({ type: "SET_ERROR", payload: { error: null } })
-      } catch (error) {
-        dispatch({ type: "SET_ERROR", payload: { error: error } })
-      }
-    }
-
-    if (services === "") {
-      fetchIt();
+    if (services === "" && routeIDs) {
+      fetchIt(routeIDs, setServices, dispatch)
     }
   }, [services, routeIDs, setServices, dispatch]);
   

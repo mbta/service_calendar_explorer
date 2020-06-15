@@ -102,7 +102,7 @@ const dateRanges = (services: Service[]) => {
 // TODO: does not rerender with new services. Does show on refresh though
 const Analysis = (): ReactElement => {
   const routeIDs = useSelector((store: State) => store.routes);
-  const routesQuery = routeIDs.sort().join("-");
+  const routesQuery = routeIDs ? routeIDs.sort().join("-") : "";
   const [services] = useLocalStorage(routesQuery, "");
 
   return services ? (
