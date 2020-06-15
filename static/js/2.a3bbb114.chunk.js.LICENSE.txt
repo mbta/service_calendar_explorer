@@ -35,6 +35,8 @@ object-assign
  * Date: 2020-05-04T22:49Z
  */
 
+/*! (c) Andrea Giammarchi - ISC */
+
 /** @license React v0.19.1
  * scheduler.production.min.js
  *
